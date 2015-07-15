@@ -89,23 +89,23 @@ public class Header {
 		if(header.length == this.LONGUEUR_HEADER){
 			this.ID = Arrays.copyOfRange(header, 0, 16);
 			
-			System.out.println(" - ID = " + fromByteArray(this.ID));
+			System.out.println(" ID = " + fromByteArray(this.ID));
 			
 			this.QR = new byte[]{header[16]};
 			boolean testRecursif = QR[0]!=0;
 			
-			System.out.println(" - QR = " + testRecursif);
+			System.out.println(" QR = " + testRecursif);
 			
 			Opcode = Arrays.copyOfRange(header, 17, 21);
 			
-			System.out.println(" - OpCode = " + fromByteArray(this.Opcode));
+			System.out.println(" OpCode = " + fromByteArray(this.Opcode));
 			
 			this.AA = new byte[]{header[21]};
 			this.TC = new byte[]{header[22]};
 			this.RD = new byte[]{header[23]};
 			testRecursif = RD[0]!=0; // 1: récursif,
 			
-			System.out.println(" - (recursif) RD = " + testRecursif);
+			System.out.println(" (recursif) RD = " + testRecursif);
 			
 			this.RA = new byte[]{header[24]};
 			Z = Arrays.copyOfRange(header, 25, 28);
