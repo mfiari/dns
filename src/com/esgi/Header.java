@@ -40,27 +40,27 @@ public class Header {
 	public Header(){
 	}
 
-	public Header(boolean isResponse, boolean isRecursif, int codeResponse, int _numberQuestion, int _numberRR){
+	public Header(boolean isResponse, boolean isRecursif, int codeResponse, int nbQuestion, int nbResponse){
 		
-		ID = toByteArray(this.idIncrement++,LONGUEUR_ID);
+		ID = toByteArray(idIncrement++,LONGUEUR_ID);
 		
-		this.QR = new byte[]{(byte) (isResponse?0:1)};    	
-		this.Opcode = toByteArray(0,this.LONGUEUR_OPCODE);
-		this.AA = new byte[]{(byte) (0)};
-		this.TC = new byte[]{(byte) (0)};
+		QR = new byte[]{(byte) (isResponse?0:1)};    	
+		Opcode = toByteArray(0,LONGUEUR_OPCODE);
+		AA = new byte[]{(byte) (0)};
+		TC = new byte[]{(byte) (0)};
 		if(isResponse){
-			this.RD = new byte[]{(byte) (isRecursif?1:0)};
-			this.RA = new byte[]{(byte) (0)};
+			RD = new byte[]{(byte) (isRecursif?1:0)};
+			RA = new byte[]{(byte) (0)};
 		}else{
-			this.RD = new byte[]{(byte) (0)};
-			this.RA = new byte[]{(byte) (isRecursif?1:0)};
+			RD = new byte[]{(byte) (0)};
+			RA = new byte[]{(byte) (isRecursif?1:0)};
 		}
-		this.Z = new byte[this.LONGUEUR_Z];
-		this.RCODE = toByteArray(codeResponse,this.LONGUEUR_RCODE);
-		this.QDCOUNT = toByteArray(_numberQuestion,this.LONGUEUR_QDCOUNT);
-		this.ANCOUNT = toByteArray(_numberRR,this.LONGUEUR_QDCOUNT);
-		this.NSCOUNT = toByteArray(0,this.LONGUEUR_QDCOUNT);
-		this.ARCOUNT = toByteArray(0,this.LONGUEUR_QDCOUNT);
+		Z = new byte[LONGUEUR_Z];
+		RCODE = toByteArray(codeResponse, LONGUEUR_RCODE);
+		QDCOUNT = toByteArray(nbQuestion, LONGUEUR_QDCOUNT);
+		ANCOUNT = toByteArray(nbResponse, LONGUEUR_QDCOUNT);
+		NSCOUNT = toByteArray(0, LONGUEUR_QDCOUNT);
+		ARCOUNT = toByteArray(0, LONGUEUR_QDCOUNT);
 
 		try{
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
@@ -85,41 +85,36 @@ public class Header {
 	}
 
 	public void decodeByte(byte[] header){
+		
 		System.out.println("\nDécodage de l'en-tête: ");
-		if(header.length == this.LONGUEUR_HEADER){
-			this.ID = Arrays.copyOfRange(header, 0, 16);
+		if(header.length == LONGUEUR_HEADER){
+			ID = Arrays.copyOfRange(header, 0, 16);
+			System.out.println(" ID = " + fromByteArray(ID));
 			
-			System.out.println(" ID = " + fromByteArray(this.ID));
-			
-			this.QR = new byte[]{header[16]};
+			QR = new byte[]{header[16]};
 			boolean testRecursif = QR[0]!=0;
-			
 			System.out.println(" QR = " + testRecursif);
 			
 			Opcode = Arrays.copyOfRange(header, 17, 21);
+			System.out.println(" OpCode = " + fromByteArray(Opcode));
 			
-			System.out.println(" OpCode = " + fromByteArray(this.Opcode));
-			
-			this.AA = new byte[]{header[21]};
-			this.TC = new byte[]{header[22]};
-			this.RD = new byte[]{header[23]};
+			AA = new byte[]{header[21]};
+			TC = new byte[]{header[22]};
+			RD = new byte[]{header[23]};
 			testRecursif = RD[0]!=0; // 1: récursif,
 			
 			System.out.println(" (recursif) RD = " + testRecursif);
 			
-			this.RA = new byte[]{header[24]};
+			RA = new byte[]{header[24]};
 			Z = Arrays.copyOfRange(header, 25, 28);
 			RCODE = Arrays.copyOfRange(header, 28, 32);
-			
-			System.out.println(" RCODE = " + fromByteArray(this.RCODE));
+			System.out.println(" RCODE = " + fromByteArray(RCODE));
 			
 			QDCOUNT = Arrays.copyOfRange(header, 32, 48);
-			
-			System.out.println(" QDCOUNT= " + fromByteArray(this.QDCOUNT));
+			System.out.println(" QDCOUNT= " + fromByteArray(QDCOUNT));
 			
 			ANCOUNT = Arrays.copyOfRange(header, 48, 64);
-			
-			System.out.println(" ANCOUNT = " + fromByteArray(this.ANCOUNT));
+			System.out.println(" ANCOUNT = " + fromByteArray(ANCOUNT));
 			
 			NSCOUNT = Arrays.copyOfRange(header, 64, 80);
 			ARCOUNT = Arrays.copyOfRange(header, 80, 96);
@@ -132,26 +127,26 @@ public class Header {
 		return headerInByte;
 	}
 
-	public void setHeaderInByte(byte[] headerInByte) {
-		this.headerInByte = headerInByte;
+	public void setHeaderInByte(byte[] headerInByteP) {
+		headerInByte = headerInByteP;
 	}
 
 	byte[] toByteArray(int value, int longueur) {
 		return  ByteBuffer.allocate(longueur).putInt(value).array();
 	}
 
+	public int getQDCOUNT(){
+		return fromByteArray(QDCOUNT);
+	}
+	public int getANCOUNT(){
+		return fromByteArray(ANCOUNT);
+	}
+	
 	int fromByteArray(byte[] bytes) {
 		return ByteBuffer.wrap(bytes).getInt();
 	}
 
 	public int getRcode(){
-		return fromByteArray(this.ID);
-	}
-
-	public int getQDCOUNT(){
-		return fromByteArray(this.QDCOUNT);
-	}
-	public int getANCOUNT(){
-		return fromByteArray(this.ANCOUNT);
+		return fromByteArray(ID);
 	}
 }

@@ -63,13 +63,13 @@ public class Server {
 			
 		sendMessage = messageResponse.getMessageInByte();
 		
-		this.client.recevoirMessage(this.sendMessage);	
+		this.client.recevoirMessage(sendMessage);	
 	}
 
 
 	public void receiveMessageFromClient(byte[] message, Client client) {
 		this.client = client;
-		this.receivedMessage = message;
+		receivedMessage = message;
 		getIp();
 	}
 }
