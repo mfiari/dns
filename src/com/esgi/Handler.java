@@ -42,7 +42,7 @@ public class Handler {
 	}
 	
 	public void runRequest (String domain) {
-		Client client = new Client("127.0.0.1",8181);
+		/*Client client = new Client("127.0.0.1",8181);
 		Server server = new Server("127.0.0.1",8282);
 		
 		client.linkToServer(server);
@@ -66,7 +66,7 @@ public class Handler {
 		this.session.get(domain).put("TTL", client.response._ttl);
 		this.session.get(domain).put("LONGUEUR", client.response._longueur);
 		this.session.get(domain).put("RDATA", client.response._rdata);
-		this.session.get(domain).put("FINISH", dateTTL);
+		this.session.get(domain).put("FINISH", dateTTL);*/
 	}
 
 }

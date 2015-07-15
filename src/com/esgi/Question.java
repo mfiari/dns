@@ -14,8 +14,8 @@ public class Question {
 	
 	public String domainName;
 
-
-	public void constructQuestionSection(String domainName,String type,String classe){
+	public Question(){}
+	public Question(String domainName,String type,String classe){
 		this.domainName = "";
 		QNAME = getQName(domainName);
 		QTYPE = new byte[16];
@@ -23,18 +23,17 @@ public class Question {
 		QCLASS = new byte[16];
 		QCLASS = getBytesFromString(QCLASS,classe);
 	}
-
  
 	public byte[] getQName (String domain){
 		try{
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		
-			byte[] size = ByteBuffer.allocate(4).putInt((byte) domain.getBytes().length).array(); ;
+			byte[] size = ByteBuffer.allocate(4).putInt((byte) domain.getBytes().length).array();
 			outputStream.write(size);
 			outputStream.write(domain.getBytes());
 			
 			outputStream.write(ByteBuffer.allocate(4).putInt((byte)0).array());
-			QNAME = outputStream.toByteArray( );
+			QNAME = outputStream.toByteArray();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -97,9 +96,9 @@ public class Question {
 		
 		int response = QCLASS.length + QTYPE.length + QNAME.length + 8;
 		
-		System.out.println(" - QNAME " + domainName);
-		System.out.println(" - QTYPE " + qType);
-		System.out.println(" - QCLASS "+qClass);
+		System.out.println(" QNAME " + domainName);
+		System.out.println(" QTYPE " + qType);
+		System.out.println(" QCLASS "+qClass);
 		
 		return response;
 	}

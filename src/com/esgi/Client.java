@@ -3,44 +3,33 @@ package com.esgi;
 import java.util.Arrays;
 
 public class Client {
-	public static int PORT_DNS = 68;
 
-	public String adresseIp;
 	public int port;
 	public Server server;
 	public byte[] receivedMessage;
 	public Response response;
 
-	public Client(String ip, int port) {
-		this.adresseIp = ip;
+	public Client(int port, Server server) {
 		this.port = port;
-	}
-
-	public void linkToServer(Server server){
 		this.server = server;
 	}
 
+	public void getIpByDomainName(String domainName){
 
-	public void sendRequestWithDomainName(String domainName){
+		Header header = new Header(false, false, 1, 2, 0);
+		
+		Question question = new Question(domainName,"IN","A");
 
-		// En tête
-		Header header = new Header();
-		header.createHeader(false, false, 1, 2, 0);
-		
-		// Question
-		Question question = new Question();
-		question.constructQuestionSection(domainName,"IN","A");
-		
-		// Message
 		Message message = new Message(header.getQDCOUNT(),header.getANCOUNT());
 		message.header = header;
 		message.question = question;
 		
 		server.receiveMessageFromClient(message.getMessageInByte(), this);
+		displayResponse();
 	}
 
 	
-	public void displayResult(){
+	public void displayResponse(){
 		Header header = new Header();
 		header.decodeByte(Arrays.copyOfRange(receivedMessage, 0, 96));
 		int start = 96;

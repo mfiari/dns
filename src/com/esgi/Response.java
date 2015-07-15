@@ -57,19 +57,6 @@ public class Response {
 		return null;
 	}
 
-	public byte[] getBytesFromString(byte[] field, String s){
-		byte[] tempString = s.getBytes();
-		for(int i=0;i<field.length;i++){
-			if(i<tempString.length){
-				field[i] = tempString[i];
-			}else{
-				field[i] = 0;
-			}
-
-		}
-		return field;
-	}
-
 	public int decodeByte(byte[] bs) {
 
 		System.out.println("\nDecodage de la réponse: ");
@@ -99,14 +86,25 @@ public class Response {
 		
 		int response= NAME.length + TYPE.length + CLASS.length + TTL.length + RDLENGTH.length + RDATA.length;
 		
-		System.out.println(" - NAME " + name );
-		System.out.println(" - TYPE " + type );
-		System.out.println(" - CLASS " + classStr);
-		System.out.println(" - TTL " + size);
-		System.out.println(" - LONGUEUR " + length);
-		System.out.println(" - RDATA " + rData);
+		System.out.println(" NAME " + name );
+		System.out.println(" TYPE " + type );
+		System.out.println(" CLASS " + classStr);
+		System.out.println(" TTL " + size);
+		System.out.println(" LONGUEUR " + length);
+		System.out.println(" RDATA " + rData);
 		
 		return response;
-
+	}
+	
+	public byte[] getBytesFromString(byte[] field, String s){
+		byte[] tempString = s.getBytes();
+		for(int i=0;i<field.length;i++){
+			if(i<tempString.length){
+				field[i] = tempString[i];
+			}else{
+				field[i] = 0;
+			}
+		}
+		return field;
 	}
 }
