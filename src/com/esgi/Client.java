@@ -7,6 +7,7 @@ public class Client {
 	public int port;
 	public Server server;
 	public byte[] receivedMessage;
+	public Response response;
 
 	public Client(int port, Server server) {
 		this.port = port;
@@ -37,6 +38,7 @@ public class Client {
 		for(int i=0;i<header.getANCOUNT();i++){
 			Response response = new Response();
 			start = start + response.decodeByte(Arrays.copyOfRange(receivedMessage, start, end));
+			this.response = response;
 		}
 	}
 
