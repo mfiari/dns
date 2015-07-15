@@ -25,7 +25,6 @@ public class Client {
 		message.question = question;
 		
 		server.receiveMessageFromClient(message.getMessageInByte(), this);
-		//displayResponse();
 	}
 
 	
