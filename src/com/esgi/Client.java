@@ -25,7 +25,7 @@ public class Client {
 		message.question = question;
 		
 		server.receiveMessageFromClient(message.getMessageInByte(), this);
-		displayResponse();
+		//displayResponse();
 	}
 
 	
@@ -44,5 +44,6 @@ public class Client {
 
 	public void recevoirMessage(byte[] messageInByte) {
 		receivedMessage = messageInByte;
+		displayResponse();
 	}
 }
