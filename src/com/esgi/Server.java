@@ -7,27 +7,25 @@ import java.util.HashMap;
 
 public class Server {
 
-	public String adresseIp;
 	public int port;
 	public byte[] receivedMessage;
 	public byte[] sendMessage;
 	public Message message;
 	public Client client;
-	public HashMap<String, String> listePlageAdresse;
+	public HashMap<String, String> correspondanceUrlIp;
 	
 
-	public Server(String string, int i) {
-		this.adresseIp = string;
-		this.port = i;
+	public Server(int port) {
+		this.port = port;
 
-		listePlageAdresse = new HashMap<String, String>();
-		listePlageAdresse.put("www.github.com", "192.30.252.131");
-		listePlageAdresse.put("www.google.fr", "64.233.166.94");
-		listePlageAdresse.put("www.myges.com", "54.155.107.66");
+		correspondanceUrlIp = new HashMap<String, String>();
+		correspondanceUrlIp.put("www.9gag.com", "192.15.227.125");
+		correspondanceUrlIp.put("www.google.fr", "90.145.146.12");
+		correspondanceUrlIp.put("www.myges.com", "91.135.121.15");
 	}
 
 	public void getIp() {
-		System.out.println("\nRecherche correspondance ip:");
+		System.out.println("\nRecherche correspondance IP:");
 
 		Header header = new Header();
 		header.decodeByte(Arrays.copyOfRange(receivedMessage, 0, 96));
@@ -49,16 +47,15 @@ public class Server {
 		ArrayList<Response> listeResponse = new ArrayList<Response>();
 
 		if(qType.contains("IN") && qclass.contains("A")){
-			if(this.listePlageAdresse.containsKey(domainName)){				
+			if(this.correspondanceUrlIp.containsKey(domainName)){				
 				Response reponse = new Response();
-				reponse.constructResponse("response","A","IN",3000,this.listePlageAdresse.get(domainName));
+				reponse.constructResponse("response","A","IN",5000,this.correspondanceUrlIp.get(domainName));
 				listeResponse.add(reponse);
-				System.out.println("\nCorrespondance : " + domainName + " = " + this.listePlageAdresse.get(domainName)+"");
+				System.out.println("\nCorrespondance : " + domainName + " = " + this.correspondanceUrlIp.get(domainName)+"");
 			}			
 		}
 				
-		Header headerResponse = new Header();
-		headerResponse.createHeader(true,false,1,0,listeResponse.size());
+		Header headerResponse = new Header(true,false,1,0,listeResponse.size());
 		
 		Message messageResponse = new Message(0,listeResponse.size());
 		messageResponse.header = headerResponse;
@@ -66,13 +63,9 @@ public class Server {
 			
 		sendMessage = messageResponse.getMessageInByte();
 		
-		sendResponseToClient();
+		this.client.recevoirMessage(this.sendMessage);	
 	}
 
-
-	public void sendResponseToClient() {		
-		this.client.recevoirMessage(this.sendMessage);		
-	}
 
 	public void receiveMessageFromClient(byte[] message, Client client) {
 		this.client = client;

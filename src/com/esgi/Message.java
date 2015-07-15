@@ -10,9 +10,9 @@ public class Message {
     public int numberOfQuestions;
     public int numberOfResponses;
 
-    public Message(int _numberOfQuestions,int _numberOfResponses){
-    	numberOfQuestions = _numberOfQuestions;
-    	numberOfResponses = _numberOfResponses;
+    public Message(int nbQuestions,int nbResponses){
+    	numberOfQuestions = nbQuestions;
+    	numberOfResponses = nbResponses;
         responses = new ArrayList<>();
     }
     

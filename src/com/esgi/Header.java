@@ -6,7 +6,17 @@ import java.util.Arrays;
 
 public class Header {
 
-	public int incrementalID=0;
+	public final int LONGUEUR_ID = 16;
+	public final int LONGUEUR_OPCODE = 4;
+	public final int LONGUEUR_Z = 3;
+	public final int LONGUEUR_RCODE = 4;
+	public final int LONGUEUR_QDCOUNT = 16;
+	public final int LONGUEUR_ANCOUNT = 16;
+	public final int LONGUEUR_NSCOUNT = 16;
+	public final int LONGUEUR_ARCOUNT = 16;
+	public final int LONGUEUR_HEADER = 96;
+	
+	public int idIncrement=0;
 	public byte[] ID;
 	public byte[] QR;
 	public byte[] Opcode;
@@ -23,17 +33,6 @@ public class Header {
 
 	public byte[] headerInByte;
 
-	public final int LONGUEUR_ID = 16;
-	public final int LONGUEUR_OPCODE = 4;
-	public final int LONGUEUR_Z = 3;
-	public final int LONGUEUR_RCODE = 4;
-	public final int LONGUEUR_QDCOUNT = 16;
-	public final int LONGUEUR_ANCOUNT = 16;
-	public final int LONGUEUR_NSCOUNT = 16;
-	public final int LONGUEUR_ARCOUNT = 16;
-
-	public final int LONGUEUR_TOTAL_HEADER = 96;
-
 	public Header(byte[] _headerInByte){
 		this.headerInByte = _headerInByte;
 	}
@@ -41,8 +40,10 @@ public class Header {
 	public Header(){
 	}
 
-	public void createHeader(boolean isResponse, boolean isRecursif, int _codeResponse, int _numberQuestion, int _numberRR){
-		generatedID();
+	public Header(boolean isResponse, boolean isRecursif, int codeResponse, int _numberQuestion, int _numberRR){
+		
+		ID = toByteArray(this.idIncrement++,LONGUEUR_ID);
+		
 		this.QR = new byte[]{(byte) (isResponse?0:1)};    	
 		this.Opcode = toByteArray(0,this.LONGUEUR_OPCODE);
 		this.AA = new byte[]{(byte) (0)};
@@ -55,7 +56,7 @@ public class Header {
 			this.RA = new byte[]{(byte) (isRecursif?1:0)};
 		}
 		this.Z = new byte[this.LONGUEUR_Z];
-		this.RCODE = toByteArray(_codeResponse,this.LONGUEUR_RCODE);
+		this.RCODE = toByteArray(codeResponse,this.LONGUEUR_RCODE);
 		this.QDCOUNT = toByteArray(_numberQuestion,this.LONGUEUR_QDCOUNT);
 		this.ANCOUNT = toByteArray(_numberRR,this.LONGUEUR_QDCOUNT);
 		this.NSCOUNT = toByteArray(0,this.LONGUEUR_QDCOUNT);
@@ -85,15 +86,15 @@ public class Header {
 
 	public void decodeByte(byte[] header){
 		System.out.println("\nDécodage de l'en-tête: ");
-		if(header.length == this.LONGUEUR_TOTAL_HEADER){
+		if(header.length == this.LONGUEUR_HEADER){
 			this.ID = Arrays.copyOfRange(header, 0, 16);
 			
 			System.out.println(" - ID = " + fromByteArray(this.ID));
 			
 			this.QR = new byte[]{header[16]};
-			boolean testBool = QR[0]!=0;
+			boolean testRecursif = QR[0]!=0;
 			
-			System.out.println(" - QR = " + testBool);
+			System.out.println(" - QR = " + testRecursif);
 			
 			Opcode = Arrays.copyOfRange(header, 17, 21);
 			
@@ -102,23 +103,23 @@ public class Header {
 			this.AA = new byte[]{header[21]};
 			this.TC = new byte[]{header[22]};
 			this.RD = new byte[]{header[23]};
-			testBool = RD[0]!=0;
+			testRecursif = RD[0]!=0; // 1: récursif,
 			
-			System.out.println(" - (recursif) RD = " + testBool);
+			System.out.println(" - (recursif) RD = " + testRecursif);
 			
 			this.RA = new byte[]{header[24]};
 			Z = Arrays.copyOfRange(header, 25, 28);
 			RCODE = Arrays.copyOfRange(header, 28, 32);
 			
-			System.out.println(" - RCODE = " + fromByteArray(this.RCODE));
+			System.out.println(" RCODE = " + fromByteArray(this.RCODE));
 			
 			QDCOUNT = Arrays.copyOfRange(header, 32, 48);
 			
-			System.out.println(" - QDCOUNT= " + fromByteArray(this.QDCOUNT));
+			System.out.println(" QDCOUNT= " + fromByteArray(this.QDCOUNT));
 			
 			ANCOUNT = Arrays.copyOfRange(header, 48, 64);
 			
-			System.out.println(" - ANCOUNT = " + fromByteArray(this.ANCOUNT));
+			System.out.println(" ANCOUNT = " + fromByteArray(this.ANCOUNT));
 			
 			NSCOUNT = Arrays.copyOfRange(header, 64, 80);
 			ARCOUNT = Arrays.copyOfRange(header, 80, 96);
@@ -135,39 +136,12 @@ public class Header {
 		this.headerInByte = headerInByte;
 	}
 
-	public void generatedID(){
-		ID = toByteArray(this.incrementalID++,LONGUEUR_ID);
-	}
-
 	byte[] toByteArray(int value, int longueur) {
 		return  ByteBuffer.allocate(longueur).putInt(value).array();
 	}
 
 	int fromByteArray(byte[] bytes) {
 		return ByteBuffer.wrap(bytes).getInt();
-	}
-
-	public int getID(){
-		System.out.println(" * ID = " + fromByteArray(this.ID));
-		return fromByteArray(this.ID);
-	}
-
-	public boolean getQR(){
-		boolean qr = QR[0]!=0;
-		if(qr){
-			System.out.println(" * QR = " + qr + "C'est une QUERY");
-		}else{
-			System.out.println(" * QR = " + qr + "C'est une RESPONSE");
-		}
-		return QR[0]!=0;
-	}
-
-	public boolean getRD(){
-		return RD[0]!=0;
-	}
-
-	public boolean getRA(){
-		return RA[0]!=0;
 	}
 
 	public int getRcode(){
