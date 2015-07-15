@@ -112,7 +112,7 @@ public class Server {
 		Message messageResponse = new Message(0,listeResponse.size());
 		messageResponse.header = headerResponse;
 		messageResponse.responses = listeResponse;
-			
+
 		byte[] sendMessage = messageResponse.getMessageInByte();
 		synchronized(lock) {
 			client.recevoirMessage(sendMessage);
