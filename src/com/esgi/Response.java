@@ -13,6 +13,13 @@ public class Response {
 	public byte[] TTL;
 	public byte[] RDLENGTH;
 	public byte[] RDATA;
+	
+	public String _name;
+	public String _type;
+	public String _class;
+	public int _ttl;
+	public int _longueur;
+	public String _rdata;
 
 
 	public void constructResponse(String name,String type,String classe, int ttl,String data){
@@ -68,21 +75,27 @@ public class Response {
 		System.out.println("\nDecodage de la réponse: ");
 		NAME = Arrays.copyOfRange(bs,0,16);
 		String name = new String(NAME);
+		this._name = name;
 		
 		TYPE = Arrays.copyOfRange(bs,16,32);
 		String type = new String(TYPE);
+		this._type = type;
 		
 		CLASS = Arrays.copyOfRange(bs,32,48);
 		String classStr = new String(CLASS);
+		this._class = classStr;
 		
 		TTL = Arrays.copyOfRange(bs,48,80);
-		int size = ByteBuffer.wrap(TTL).getInt(); 
+		int size = ByteBuffer.wrap(TTL).getInt();
+		this._ttl = size;
 		
 		RDLENGTH = Arrays.copyOfRange(bs,80,96);
-		int length = ByteBuffer.wrap(RDLENGTH).getInt(); 
+		int length = ByteBuffer.wrap(RDLENGTH).getInt();
+		this._longueur = length;
 		
 		RDATA = Arrays.copyOfRange(bs,96,96+length);
 		String rData = new String(RDATA);
+		this._rdata = rData;
 		
 		int response= NAME.length + TYPE.length + CLASS.length + TTL.length + RDLENGTH.length + RDATA.length;
 		
